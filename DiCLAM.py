@@ -203,33 +203,34 @@ def main():
     model = DistilledCNN(num_classes=10).to(device)
 
 
-    # 在定义model之后，criterion之前添加以下代码
+    
+    # add extra weight for certain class
     print("Calculating class weights...")
-# 获取训练集标签分布
+# retrieve the class label
     train_labels = [train_dataset[i][1] for i in range(len(train_dataset))]
     class_counts = np.bincount(train_labels)
     total_samples = len(train_labels)
 
-# 计算每个类别的频率
+# calculate the freqeuncy of each class 
     class_freq = class_counts / total_samples
 
-# 初始权重设为1.0
+# initial weight: 1.0
     class_weights = np.ones(10, dtype=float)
 
-# 调整特定类别的权重（CIFAR-10类别顺序: 0-airplane, 1-automobile, 2-bird, 3-cat, 4-deer, 5-dog, 6-frog, 7-horse, 8-ship, 9-truck）
+# tune some specific class weights（the class order in CIFAR-10: 0-airplane, 1-automobile, 2-bird, 3-cat, 4-deer, 5-dog, 6-frog, 7-horse, 8-ship, 9-truck）
     cat_index = 3  # 'cat'
     bird_index = 2  # 'bird'
     dog_index = 5  # 'dog'
     
 
-# 设置权重：猫1.8倍，鸟和狗1.2倍
+# certain set weights: 'cat':1.8; 'bird' and 'dog':1.2
     class_weights[cat_index] = 1.8
     class_weights[bird_index] = 1.2
     class_weights[dog_index] = 1.2
     
     print(f"Class weights: {class_weights}")
 
-# 优化训练设置（修改criterion部分）
+# set the optimization
     criterion = nn.CrossEntropyLoss(weight=torch.tensor(class_weights, dtype=torch.float).to(device),
                                label_smoothing=0.1)  # 带类别权重的交叉熵损失
     optimizer = optim.AdamW(model.parameters(), lr=0.003, weight_decay=0.01)  # 更高的学习率，权重衰减
