@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-Distilled Enhanced CNN with MHA & MoE - CIFAR-10 (PyTorch)
-Optimized for fast training (under 10 minutes)
+DiLCAM - CIFAR-10 (PyTorch)
+fast training (under 10 minutes)
 
 @author: Killian
 """
